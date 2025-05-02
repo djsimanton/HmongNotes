@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v5';
+const CACHE_NAME = 'hmongnotes-cache-v6';
 
 const urlsToCache = [
   '/',    // Root
@@ -621,7 +621,8 @@ const urlsToCache = [
   'png_files/96._Sowing_in_the_morning,__97._Bless_be_the_tie_page001.png',
   'png_files/98._O_worship_the_King_page000.png',
   'png_files/99._How_firm_a_foundation_page000.png',
-  'license.html',                                                   
+  'license.html',
+  'favicon.ico',
   'service-worker.js',
   'css/index.css',
   'css/slider.css',
