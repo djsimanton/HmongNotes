@@ -1,12 +1,13 @@
-const CACHE_NAME = 'hmongnotes-cache-v6';
+const CACHE_NAME = 'hmongnotes-cache-v7';
 
 const urlsToCache = [
   '/',    // Root
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
-  '/index.html',
-  '/hmongnotes.html',
+  
+  'index.html',
+  'hmongnotes.html',
   '1.html',
   '10.html',
   '100.html',
