@@ -2,35 +2,16 @@
 <html lang="hmg"><head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-
-        // Listen for updates to the service worker
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // New update available — tell the SW to activate immediately
-                newWorker.postMessage('SKIP_WAITING');
-              }
-            }
-          });
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(function(error) {
+                    console.log('Service Worker registration failed:', error);
+                });
         });
-      }).catch(function(error) {
-        console.log('Service Worker registration failed:', error);
-      });
-
-    // When the new service worker has taken over, reload the page
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('New service worker activated, reloading...');
-      window.location.reload();
-    });
-  });
-}
+    }
 </script>
 <meta name="theme-color" content="#003366">
 <link rel="manifest" href="/manifest.json">
@@ -70,17 +51,7 @@ jQuery(document).ready(function($) {
 $(".menu,.search").hide();
 $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#search").removeClass("active"); $("#menu").toggleClass("active"); });
 </script><br><script type="text/javascript" src="js/script.js"></script><div class="clear"></div></div></div></div>
-        
-        <p>&nbsp;</p>
-        <div id="offline-toggle" style="padding: 1em;">
-          <label>
-            <input type="checkbox" id="offlineCheckbox">
-            Enable Offline Mode
-          </label>
-          <span id="offline-status" style="margin-left: 1em;"></span>
-        </div>
-        <p>&nbsp;</p>                    
-    
+
 <div class="wrap"><div class="main"><div class="main_text">
 <div style="text-align: left;">
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="1.html">#1 -  Kuv nyiam hu nkauj 4</a></small></small></p>
@@ -441,7 +412,6 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <td></td>
 <td style="text-align: right;"><a href="2.html"><img style="width: 25px; height: 25px;" src="images/arrow-r-black.png" alt=""></a></td>
 </tr>
-
 </table>
 </div></div></div></div>
 
@@ -458,81 +428,4 @@ $(document).ready(function() {
 <p class="link"><span>© 2025 <a href="https://www.mekongchristianmedia.com" target="_blank">MekongChristianMedia</a></span><span> | </span><a href="license.html">CreativeCommons Attribution ShareAlike</a></p>
 </div><div class="clear"></div></div></div></div>
 <script src="js/font-buttons.js"></script>
-    
-    // script to manage offline opt-in:
-        <script>
-          // Function to enable offline mode and register service worker
-          function enableOffline() {
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => {
-                  console.log('Service Worker registered');
-
-                  // Show update banner if applicable
-                  reg.onupdatefound = () => {
-                    const newWorker = reg.installing;
-                    newWorker.onstatechange = () => {
-                      if (newWorker.state === 'installed') {
-                        if (navigator.serviceWorker.controller) {
-                          // Show update banner
-                          showUpdateBanner();
-                        }
-                      }
-                    };
-                  };
-                })
-                .catch(err => console.error('SW registration failed:', err));
-            }
-          }
-
-          // Toggle offline mode (turn on/off)
-          function toggleOffline(enable) {
-            if (enable) {
-              localStorage.setItem('offlineMode', 'enabled');
-              enableOffline();
-              document.getElementById('offline-status').textContent = 'Offline Mode ON';
-            } else {
-              localStorage.removeItem('offlineMode');
-              navigator.serviceWorker.getRegistration().then(reg => {
-                if (reg) {
-                  reg.unregister().then(() => {
-                    // Optionally clear the cache here as well
-                    navigator.serviceWorker.controller?.postMessage('CLEAR_CACHE');
-                  });
-                }
-              });
-              document.getElementById('offline-status').textContent = 'Offline Mode OFF';
-            }
-          }
-
-          // Show update banner when new version is available
-          function showUpdateBanner() {
-            const banner = document.createElement('div');
-            banner.style.cssText = "position:fixed;bottom:0;width:100%;background:#333;color:#fff;text-align:center;padding:10px;";
-            banner.innerHTML = `
-              New version available.
-              <button onclick="location.reload()">Refresh</button>
-            `;
-            document.body.appendChild(banner);
-          }
-
-          // On page load: check stored offline preference and update UI accordingly
-          document.addEventListener('DOMContentLoaded', () => {
-            const checkbox = document.getElementById('offlineCheckbox');
-            const status = document.getElementById('offline-status');
-            const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
-
-            checkbox.checked = offlineEnabled;
-            status.textContent = offlineEnabled ? 'Offline Mode ON' : 'Offline Mode OFF';
-
-            if (offlineEnabled) {
-              enableOffline();
-            }
-
-            // Listen for changes to the checkbox and toggle offline mode
-            checkbox.addEventListener('change', () => {
-              toggleOffline(checkbox.checked);
-            });
-          });
-        </script> 
 </body></html>
