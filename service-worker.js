@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v23';
+const CACHE_NAME = 'hmongnotes-cache-v1';
 const urlsToCache = [
   '/',    // Root index.html
   '/manifest.json',
