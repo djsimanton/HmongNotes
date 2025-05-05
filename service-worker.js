@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v9';
+const CACHE_NAME = 'hmongnotes-cache-v10';
 
 const urlsToCache = [
   '/',    // Root
@@ -666,18 +666,23 @@ const urlsToCache = [
 let shouldCache = false; // default, wait for opt-in
 
 self.addEventListener('message', event => {
-  if (event.data === 'ENABLE_CACHE') {
-    shouldCache = true;
+  if (event.data === 'START_CACHING') {
+    caches.open(CACHE_NAME).then(cache => {
+      cache.addAll(urlsToCache).then(() => {
+        event.source?.postMessage('CACHING_COMPLETE');
+      });
+    });
   } else if (event.data === 'SKIP_WAITING') {
     self.skipWaiting();
   } else if (event.data === 'CLEAR_CACHE') {
     caches.keys().then(cacheNames => {
-      cacheNames.forEach(cache => {
-        caches.delete(cache);
+      Promise.all(cacheNames.map(cache => caches.delete(cache))).then(() => {
+        event.source?.postMessage('CACHING_COMPLETE');
       });
     });
   }
 });
+
 
 // Precache only if allowed
 self.addEventListener('install', event => {
