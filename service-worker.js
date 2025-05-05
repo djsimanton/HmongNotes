@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v13';
+const CACHE_NAME = 'hmongnotes-cache-v14';
 
 const urlsToCache = [
   '/',    // Root
@@ -770,40 +770,25 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Handle other assets (added the missing part)
+  // Handle other assets
   event.respondWith(
-    caches.match(request).then(response => {
-      return (
-        response ||
-        fetch(request).catch(() => {
-          if (request.destination === 'document') {
-            return caches.match('/contents.html');
-          }
-        })
-      );
+    caches.match(event.request).then(response => {
+      if (response) {
+        return response;
+      }
+
+      return fetch(event.request).catch(() => {
+        // Only return a fallback if the request is for a page/document
+        if (event.request.destination === 'document') {
+          return caches.match('/contents.html');
+        }
+
+        // For other types (images, scripts, etc), return nothing
+        return new Response('', { status: 404, statusText: 'Not found' });
+      });
     })
   );
 });
-
-
-// Handle other assets
-event.respondWith(
-  caches.match(request).then(response => {
-    if (response) {
-      return response;
-    }
-
-    return fetch(request).catch(() => {
-      // Only return a fallback if the request is for a page/document
-      if (request.destination === 'document') {
-        return caches.match('/contents.html');
-      }
-
-      // For other types (images, scripts, etc), return nothing
-      return new Response('', { status: 404, statusText: 'Not found' });
-    });
-  })
-);
 
 // Listen for messages from main thread
 self.addEventListener('message', event => {
