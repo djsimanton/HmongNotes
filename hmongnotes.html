@@ -527,4 +527,42 @@ $(document).ready(function() {
 </div><div class="clear"></div></div></div></div>
 <script src="js/font-buttons.js"></script>
 
+  
+  <script>
+  async function showCachedFiles() {
+    if (!('caches' in window)) {
+      alert('Cache API not supported.');
+      return;
+    }
+
+    const cacheNames = await caches.keys();
+    let output = '';
+
+    for (const name of cacheNames) {
+      const cache = await caches.open(name);
+      const requests = await cache.keys();
+
+      output += `Cache: ${name}\n`;
+      for (const req of requests) {
+        output += `• ${req.url}\n`;
+      }
+      output += '\n';
+    }
+
+    // Display results in a simple modal or alert
+    const pre = document.createElement('pre');
+    pre.textContent = output;
+    pre.style.cssText = 'background:#eee;padding:1em;max-height:300px;overflow:auto;border:1px solid #ccc;';
+    document.body.appendChild(pre);
+  }
+
+  // Add a button to trigger diagnostics
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.createElement('button');
+    btn.textContent = 'Show Cached Files';
+    btn.style.cssText = 'position:fixed;bottom:1em;right:1em;z-index:9999;padding:10px;';
+    btn.onclick = showCachedFiles;
+    document.body.appendChild(btn);
+  });
+</script>
 </body></html>
