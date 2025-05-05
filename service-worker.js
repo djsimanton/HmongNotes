@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v14';
+const CACHE_NAME = 'hmongnotes-cache-v15';
 
 const urlsToCache = [
   '/',    // Root
@@ -745,6 +745,8 @@ self.addEventListener('activate', event => {
       )
     )
   );
+  
+  // Only call claim() after the service worker has fully activated
   self.clients.claim();
 });
 
