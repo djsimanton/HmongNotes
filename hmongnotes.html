@@ -32,9 +32,24 @@ function enableOffline() {
     .then(reg => {
       console.log('Service Worker registered');
 
-      // When it's ready, send caching command
       navigator.serviceWorker.ready.then(() => {
         reg.active?.postMessage('START_CACHING');
+      });
+
+      // Listen for response from service worker
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data === 'CACHING_COMPLETE') {
+          console.log('Caching complete');
+
+          // Optionally show success message briefly
+          showWaitingMessage('Offline mode enabled');
+
+          // Wait a moment, then reload to activate cache immediately
+          setTimeout(() => {
+            hideWaitingMessage();
+            location.reload();
+          }, 1500);
+        }
       });
     })
     .catch(err => {
@@ -50,12 +65,34 @@ function disableOffline() {
     if (reg) {
       reg.unregister().then(() => {
         navigator.serviceWorker.controller?.postMessage('CLEAR_CACHE');
-        hideWaitingMessage();
+        // Reload the page after cache is cleared
+        setTimeout(() => {
+          hideWaitingMessage();
+          location.reload();
+        }, 2000); // Adjust the delay time if needed
       });
     } else {
       hideWaitingMessage();
     }
   });
+}
+
+function enableOffline() {
+  showWaitingMessage('Wait while files are saved...');
+
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => {
+      console.log('Service Worker registered');
+      
+      // When it's ready, send caching command
+      navigator.serviceWorker.ready.then(() => {
+        reg.active?.postMessage('START_CACHING');
+      });
+    })
+    .catch(err => {
+      console.error('SW registration failed:', err);
+      hideWaitingMessage();
+    });
 }
 
 function toggleOffline(enable) {
@@ -69,6 +106,7 @@ function toggleOffline(enable) {
     document.getElementById('offline-status').textContent = 'Offline Mode OFF';
   }
 }
+
 
 // On page load
 document.addEventListener('DOMContentLoaded', () => {

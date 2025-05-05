@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v17';
+const CACHE_NAME = 'hmongnotes-cache-v18';
 
 const urlsToCache = [
   '/',    // Root
