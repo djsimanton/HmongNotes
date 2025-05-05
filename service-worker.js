@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v7';
+const CACHE_NAME = 'hmongnotes-cache-v8';
 
 const urlsToCache = [
   '/',    // Root
@@ -662,6 +662,60 @@ const urlsToCache = [
   'js/move-top.js',
   'js/script.js'
 ];
+
+let shouldCache = false; // default, wait for opt-in
+
+self.addEventListener('message', event => {
+  if (event.data === 'ENABLE_CACHE') {
+    shouldCache = true;
+  } else if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  } else if (event.data === 'CLEAR_CACHE') {
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cache => {
+        caches.delete(cache);
+      });
+    });
+  }
+});
+
+// Precache only if allowed
+self.addEventListener('install', event => {
+  self.skipWaiting(); // always activate new SW
+  event.waitUntil(Promise.resolve()); // Wait for postMessage to decide
+});
+
+// Cache after activation, if enabled
+self.addEventListener('activate', event => {
+  if (shouldCache) {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.addAll(urlsToCache);
+      }).then(() =>
+        caches.keys().then(cacheNames =>
+          Promise.all(
+            cacheNames.map(cache => {
+              if (cache !== CACHE_NAME) {
+                return caches.delete(cache);
+              }
+            })
+          )
+        )
+      )
+    );
+  } else {
+    event.waitUntil(
+      caches.keys().then(cacheNames =>
+        Promise.all(
+          cacheNames.map(cache => caches.delete(cache))
+        )
+      )
+    );
+  }
+
+  self.clients.claim();
+});
+
 
 // Install: pre-cache files
 self.addEventListener('install', event => {

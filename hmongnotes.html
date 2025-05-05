@@ -1,37 +1,74 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html lang="hmg"><head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
 
-        // Listen for updates to the service worker
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
+  <script>
+  // Offline toggle logic with opt-in SW registration
+  document.addEventListener('DOMContentLoaded', () => {
+    const checkbox = document.getElementById('offlineCheckbox');
+    const status = document.getElementById('offline-status');
+    const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
+
+    checkbox.checked = offlineEnabled;
+    status.textContent = offlineEnabled ? 'Offline Mode ON' : 'Offline Mode OFF';
+
+    if (offlineEnabled) {
+      registerSW('ENABLE_OFFLINE');
+    }
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        localStorage.setItem('offlineMode', 'enabled');
+        registerSW('ENABLE_OFFLINE');
+        status.textContent = 'Offline Mode ON';
+      } else {
+        localStorage.removeItem('offlineMode');
+        navigator.serviceWorker.getRegistration().then(reg => {
+          if (reg) {
+            reg.unregister().then(() => {
+              navigator.serviceWorker.controller?.postMessage('DISABLE_OFFLINE');
+            });
+          }
+        });
+        status.textContent = 'Offline Mode OFF';
+      }
+    });
+  });
+
+  function registerSW(modeMessage) {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(reg => {
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage(modeMessage);
+        } else {
+          // Wait for the service worker to take control, then send the message
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            navigator.serviceWorker.controller?.postMessage(modeMessage);
+          });
+        }
+
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // New update available — tell the SW to activate immediately
-                newWorker.postMessage('SKIP_WAITING');
-              }
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateBanner();
             }
           });
         });
-      }).catch(function(error) {
-        console.log('Service Worker registration failed:', error);
       });
+    }
+  }
 
-    // When the new service worker has taken over, reload the page
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('New service worker activated, reloading...');
-      window.location.reload();
-    });
-  });
-}
+  function showUpdateBanner() {
+    const banner = document.createElement('div');
+    banner.style.cssText = "position:fixed;bottom:0;width:100%;background:#333;color:#fff;text-align:center;padding:10px;";
+    banner.innerHTML = `New version available. <button onclick="location.reload()">Refresh</button>`;
+    document.body.appendChild(banner);
+  }
 </script>
+
+
+
 <meta name="theme-color" content="#003366">
 <link rel="manifest" href="/manifest.json">
 <title>Hmong SDA Notes</title>
@@ -96,8 +133,8 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="11.html">#11 -  Lord in the morning</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="12.html">#12 -  Nearer, my God, to thee</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="13.html">#13 -  The First Song I sing 1</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="14.html">#14 -  Sweet Hour of prayer, 15. Fisher of man  1</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="14.html">#14 -  Sweet Hour of prayer, 15. Fisher of man  1</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="14.html">#14 -  Sweet Hour of prayer</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="14.html">#15 -  Fisher of man</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="16.html">#16 -  Jesus, the very thought of thee</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="17.html">#17 -  Jehovah God cares for me</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="18.html">#18 -  Face to face with Christ my Saviour</a></small></small></p>
@@ -112,38 +149,38 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="27.html">#27 -  Jonah</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="28.html">#28 -  Hover O_er me Holy Spirit</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="29.html">#29 -  Holy Spirit, Faithful Guide</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="30.html">#30 -  The Love of God, 31. Roll Roll Your Burdens Away</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="30.html">#30 -  The Love of God, 31. Roll Roll Your Burdens Away</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="30.html">#30 -  The Love of God</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="30.html">#31 -  Roll Roll Your Burdens Away</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="32.html">#32 -  The Lord in Zion reigneth</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="33.html">#33 -  Come, thou almighty King</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="34.html">#34 -  Jesus love me this I know</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="35.html">#35 -  Jesus is coming again</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="36.html">#36 -  When the roll is called up yonder</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="36.html">#36 -  When the roll is called up yonder</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="37.html">#37 -  Lift Him up,  38. My Lord knows the way</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="37.html">#37 -  Lift Him up,  38. My Lord knows the way</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="37.html">#37 -  Lift Him up</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="37.html">#38 -  My Lord knows the way</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="39.html">#39 -  Amazing grace,  40.  Into my heart</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="41.html">#41 -  What a fellowship, what a joy Divine</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="42.html">#42 -  How great thou art, 43. The Lord is in His holy Temple</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="42.html">#42 -  How great thou art, 43. The Lord is in His holy Temple</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="42.html">#42 -  How great thou art</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="42.html">#43 -  The Lord is in His holy Temple</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="44.html">#44 -  Jesus is all the world to me</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="45.html">#45 -  Jesus keep me near the Cross</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="46.html">#46 -  The Lord is my light,  47.  Whisper a prayer</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="46.html">#46 -  The Lord is my light,  47.  Whisper a prayer</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="46.html">#46 -  The Lord is my light</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="46.html">#47 -  Whisper a prayer</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="48.html">#48 -  Rejoice, Ye pure in heart</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="49.html">#49 -  This is my Father_s world</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="50.html">#50 -  Give me the Bible,  51. Two eyes read the Bible</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="50.html">#50 -  Give me the Bible,  51. Two eyes read the Bible</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="50.html">#50 -  Give me the Bible</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="50.html">#51 -  Two eyes read the Bible</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="52.html">#52 -  The righteous deed is righteousness</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="53.html">#53 -  I_m pressing on the upward way</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="54.html">#54 -  This world is not my home, 55. Thank you Jesus</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="54.html">#54 -  This world is not my home, 55. Thank you Jesus</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="54.html">#54 -  This world is not my home</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="54.html">#55 -  Thank you Jesus</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="56.html">#56 -  The way of the Cross leads home</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="57.html">#57 -  Love Divine</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="58.html">#58 -  My hope is built nothing less</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="59.html">#59 -  Watch Ye saints</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="60.html">#60 -  To God be the glory, 61. turn your eye upon Jesus</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="60.html">#60 -  To God be the glory, 61. turn your eye upon Jesus</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="60.html">#60 -  To God be the glory</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="60.html">#61 -  Turn your eye upon Jesus</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="62.html">#62 -  I need thee Every hour</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="63.html">#63 -  I hear thy welcome voice</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="64.html">#64 -  I will follow thee</a></small></small></p>
@@ -458,81 +495,5 @@ $(document).ready(function() {
 <p class="link"><span>© 2025 <a href="https://www.mekongchristianmedia.com" target="_blank">MekongChristianMedia</a></span><span> | </span><a href="license.html">CreativeCommons Attribution ShareAlike</a></p>
 </div><div class="clear"></div></div></div></div>
 <script src="js/font-buttons.js"></script>
-    
-    // script to manage offline opt-in:
-        <script>
-          // Function to enable offline mode and register service worker
-          function enableOffline() {
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => {
-                  console.log('Service Worker registered');
 
-                  // Show update banner if applicable
-                  reg.onupdatefound = () => {
-                    const newWorker = reg.installing;
-                    newWorker.onstatechange = () => {
-                      if (newWorker.state === 'installed') {
-                        if (navigator.serviceWorker.controller) {
-                          // Show update banner
-                          showUpdateBanner();
-                        }
-                      }
-                    };
-                  };
-                })
-                .catch(err => console.error('SW registration failed:', err));
-            }
-          }
-
-          // Toggle offline mode (turn on/off)
-          function toggleOffline(enable) {
-            if (enable) {
-              localStorage.setItem('offlineMode', 'enabled');
-              enableOffline();
-              document.getElementById('offline-status').textContent = 'Offline Mode ON';
-            } else {
-              localStorage.removeItem('offlineMode');
-              navigator.serviceWorker.getRegistration().then(reg => {
-                if (reg) {
-                  reg.unregister().then(() => {
-                    // Optionally clear the cache here as well
-                    navigator.serviceWorker.controller?.postMessage('CLEAR_CACHE');
-                  });
-                }
-              });
-              document.getElementById('offline-status').textContent = 'Offline Mode OFF';
-            }
-          }
-
-          // Show update banner when new version is available
-          function showUpdateBanner() {
-            const banner = document.createElement('div');
-            banner.style.cssText = "position:fixed;bottom:0;width:100%;background:#333;color:#fff;text-align:center;padding:10px;";
-            banner.innerHTML = `
-              New version available.
-              <button onclick="location.reload()">Refresh</button>
-            `;
-            document.body.appendChild(banner);
-          }
-
-          // On page load: check stored offline preference and update UI accordingly
-          document.addEventListener('DOMContentLoaded', () => {
-            const checkbox = document.getElementById('offlineCheckbox');
-            const status = document.getElementById('offline-status');
-            const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
-
-            checkbox.checked = offlineEnabled;
-            status.textContent = offlineEnabled ? 'Offline Mode ON' : 'Offline Mode OFF';
-
-            if (offlineEnabled) {
-              enableOffline();
-            }
-
-            // Listen for changes to the checkbox and toggle offline mode
-            checkbox.addEventListener('change', () => {
-              toggleOffline(checkbox.checked);
-            });
-          });
-        </script> 
 </body></html>
