@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v12';
+const CACHE_NAME = 'hmongnotes-cache-v13';
 
 const urlsToCache = [
   '/',    // Root
@@ -769,6 +769,22 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
+
+  // Handle other assets (added the missing part)
+  event.respondWith(
+    caches.match(request).then(response => {
+      return (
+        response ||
+        fetch(request).catch(() => {
+          if (request.destination === 'document') {
+            return caches.match('/contents.html');
+          }
+        })
+      );
+    })
+  );
+});
+
 
 // Handle other assets
 event.respondWith(
