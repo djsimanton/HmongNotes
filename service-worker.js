@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v10';
+const CACHE_NAME = 'hmongnotes-cache-v11';
 
 const urlsToCache = [
   '/',    // Root
@@ -770,20 +770,24 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Handle other assets
-  event.respondWith(
-    caches.match(request).then(response => {
-      return (
-        response ||
-        fetch(request).catch(() => {
-          if (request.destination === 'document') {
-            return caches.match('/contents.html');
-          }
-        })
-      );
-    })
-  );
-});
+// Handle other assets
+event.respondWith(
+  caches.match(request).then(response => {
+    if (response) {
+      return response;
+    }
+
+    return fetch(request).catch(() => {
+      // Only return a fallback if the request is for a page/document
+      if (request.destination === 'document') {
+        return caches.match('/contents.html');
+      }
+
+      // For other types (images, scripts, etc), return nothing
+      return new Response('', { status: 404, statusText: 'Not found' });
+    });
+  })
+);
 
 // Listen for messages from main thread
 self.addEventListener('message', event => {
