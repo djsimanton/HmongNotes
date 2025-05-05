@@ -2,70 +2,90 @@
 <html lang="hmg"><head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 
-  <script>
-  // Offline toggle logic with opt-in SW registration
-  document.addEventListener('DOMContentLoaded', () => {
-    const checkbox = document.getElementById('offlineCheckbox');
-    const status = document.getElementById('offline-status');
-    const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
-
-    checkbox.checked = offlineEnabled;
-    status.textContent = offlineEnabled ? 'Offline Mode ON' : 'Offline Mode OFF';
-
-    if (offlineEnabled) {
-      registerSW('ENABLE_OFFLINE');
+ <script>
+  // Show status box
+  function showStatus(message, cancellable = false, onCancel = null) {
+    let box = document.createElement('div');
+    box.id = 'statusBox';
+    box.style.cssText = `
+      position:fixed; top:20px; left:50%; transform:translateX(-50%);
+      background:#333; color:#fff; padding:15px 20px; border-radius:10px;
+      box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:10000; text-align:center;
+    `;
+    box.innerHTML = `<div>${message}</div>`;
+    if (cancellable) {
+      const btn = document.createElement('button');
+      btn.textContent = 'Stop Now';
+      btn.style.cssText = 'margin-top:10px; padding:5px 10px;';
+      btn.onclick = () => {
+        hideStatus();
+        if (onCancel) onCancel();
+      };
+      box.appendChild(btn);
     }
+    document.body.appendChild(box);
+  }
 
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        localStorage.setItem('offlineMode', 'enabled');
-        registerSW('ENABLE_OFFLINE');
-        status.textContent = 'Offline Mode ON';
-      } else {
-        localStorage.removeItem('offlineMode');
-        navigator.serviceWorker.getRegistration().then(reg => {
-          if (reg) {
-            reg.unregister().then(() => {
-              navigator.serviceWorker.controller?.postMessage('DISABLE_OFFLINE');
-            });
-          }
-        });
-        status.textContent = 'Offline Mode OFF';
-      }
-    });
-  });
+  function hideStatus() {
+    const box = document.getElementById('statusBox');
+    if (box) box.remove();
+  }
 
-  function registerSW(modeMessage) {
+  // Enable offline mode
+  function enableOffline() {
+    showStatus('Wait while files are saved...', true);
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js').then(reg => {
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage(modeMessage);
-        } else {
-          // Wait for the service worker to take control, then send the message
-          navigator.serviceWorker.addEventListener('controllerchange', () => {
-            navigator.serviceWorker.controller?.postMessage(modeMessage);
-          });
-        }
+        reg.active?.postMessage('ENABLE_OFFLINE');
 
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateBanner();
-            }
-          });
-        });
+        // Wait a moment for cache to complete, then hide box
+        setTimeout(() => hideStatus(), 3000); // Adjust timing if needed
       });
     }
   }
 
-  function showUpdateBanner() {
-    const banner = document.createElement('div');
-    banner.style.cssText = "position:fixed;bottom:0;width:100%;background:#333;color:#fff;text-align:center;padding:10px;";
-    banner.innerHTML = `New version available. <button onclick="location.reload()">Refresh</button>`;
-    document.body.appendChild(banner);
+  // Disable offline mode
+  function disableOffline() {
+    showStatus('Wait while files are removed...', true);
+
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) {
+        reg.unregister().then(() => {
+          navigator.serviceWorker.controller?.postMessage('CLEAR_CACHE');
+          setTimeout(() => hideStatus(), 2000); // Wait a moment then hide
+        });
+      } else {
+        hideStatus();
+      }
+    });
   }
+
+  // On page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const offlineCheckbox = document.getElementById('offlineCheckbox');
+    const offlineStatus = document.getElementById('offline-status');
+    const enabled = localStorage.getItem('offlineMode') === 'enabled';
+
+    offlineCheckbox.checked = enabled;
+    offlineStatus.textContent = enabled ? 'Offline Mode ON' : 'Offline Mode OFF';
+
+    if (enabled) enableOffline();
+
+    offlineCheckbox.addEventListener('change', () => {
+      if (offlineCheckbox.checked) {
+        localStorage.setItem('offlineMode', 'enabled');
+        offlineStatus.textContent = 'Offline Mode ON';
+        enableOffline();
+      } else {
+        localStorage.removeItem('offlineMode');
+        offlineStatus.textContent = 'Offline Mode OFF';
+        disableOffline();
+      }
+    });
+  });
 </script>
+
 
 
 
