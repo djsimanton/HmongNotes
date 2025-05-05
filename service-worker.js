@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v15';
+const CACHE_NAME = 'hmongnotes-cache-v16';
 
 const urlsToCache = [
   '/',    // Root
@@ -668,20 +668,28 @@ let shouldCache = false; // default, wait for opt-in
 self.addEventListener('message', event => {
   if (event.data === 'START_CACHING') {
     caches.open(CACHE_NAME).then(cache => {
-      cache.addAll(urlsToCache).then(() => {
-        event.source?.postMessage('CACHING_COMPLETE');
-      });
+      Promise.allSettled(urlsToCache.map(url => cache.add(url)))
+        .then(results => {
+          const failed = results.filter(r => r.status === 'rejected');
+          if (failed.length > 0) {
+            console.warn(`${failed.length} files failed to cache`, failed);
+          } else {
+            console.log("All files cached successfully");
+          }
+          event.source?.postMessage('CACHING_COMPLETE');
+        });
     });
   } else if (event.data === 'SKIP_WAITING') {
     self.skipWaiting();
   } else if (event.data === 'CLEAR_CACHE') {
     caches.keys().then(cacheNames => {
       Promise.all(cacheNames.map(cache => caches.delete(cache))).then(() => {
-        event.source?.postMessage('CACHING_COMPLETE');
+        event.source?.postMessage('CACHE_CLEARED');
       });
     });
   }
 });
+
 
 
 // Precache only if allowed
