@@ -13,7 +13,7 @@ function showWaitingMessage(message) {
   waitBanner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#444;color:#fff;text-align:center;padding:10px;z-index:9999;';
   waitBanner.innerHTML = `
     ${message}
-    <button onclick="hideWaitingMessage()">Stop Now</button>
+    <button onclick="hideWaitingMessage()">Tso Tawm - Stop Now</button>
   `;
   document.body.appendChild(waitBanner);
 }
@@ -26,7 +26,7 @@ function hideWaitingMessage() {
 }
 
 function enableOffline() {
-  showWaitingMessage('Wait while files are saved...');
+  showWaitingMessage('Tos khaws ntaub ntawv - Wait while files are saved...');
 
   navigator.serviceWorker.register('/service-worker.js')
     .then(reg => {
@@ -38,11 +38,11 @@ function enableOffline() {
 
       // Listen for response from service worker
       navigator.serviceWorker.addEventListener('message', event => {
-        if (event.data === 'CACHING_COMPLETE') {
+        if (event.data === 'Khaws tiav lawm - CACHING_COMPLETE') {
           console.log('Caching complete');
 
           // Optionally show success message briefly
-          showWaitingMessage('Offline mode enabled');
+          showWaitingMessage('Siv tsis muaj internet - Offline mode enabled');
 
           // Wait a moment, then reload to activate cache immediately
           setTimeout(() => {
@@ -59,7 +59,7 @@ function enableOffline() {
 }
 
 function disableOffline() {
-  showWaitingMessage('Wait while files are removed...');
+  showWaitingMessage('Tos tshem ntaub ntawv - Wait while files are removed...');
 
   navigator.serviceWorker.getRegistration().then(reg => {
     if (reg) {
@@ -78,7 +78,7 @@ function disableOffline() {
 }
 
 function enableOffline() {
-  showWaitingMessage('Wait while files are saved...');
+  showWaitingMessage('Tos khaws ntaub ntawv - Wait while files are saved...');
 
   navigator.serviceWorker.register('/service-worker.js')
     .then(reg => {
@@ -99,11 +99,11 @@ function toggleOffline(enable) {
   if (enable) {
     localStorage.setItem('offlineMode', 'enabled');
     enableOffline();
-    document.getElementById('offline-status').textContent = 'Offline Mode ON';
+    document.getElementById('offline-status').textContent = 'Siv tsis muaj internet - Offline Mode ON';
   } else {
     localStorage.removeItem('offlineMode');
     disableOffline();
-    document.getElementById('offline-status').textContent = 'Offline Mode OFF';
+    document.getElementById('offline-status').textContent = 'Tsis siv offline - Offline Mode OFF';
   }
 }
 
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
 
   checkbox.checked = offlineEnabled;
-  status.textContent = offlineEnabled ? 'Offline Mode ON' : 'Offline Mode OFF';
+  status.textContent = offlineEnabled ? 'Siv tsis muaj internet - Offline Mode ON' : 'Tsis siv offline - Offline Mode OFF';
 
   if (offlineEnabled) {
     enableOffline();
@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
 
 <div class="header_btm"><div class="wrap"><div class="header_sub"><div class="menu">
 <ul><li class="active"></li><li><a href="hmongnotes.html">Hmong Notes</a></li></ul>
-</div><div class="sub-head"><ul><li><a href="#" id="menu">Menu <span></span></a></li></ul><div class="clear"></div></div>
+</div><div class="sub-head"><ul><li><a href="#" id="menu">Phiaj Xwm - Contents <span></span></a></li></ul><div class="clear"></div></div>
 <script type="text/javascript">
 $(".menu,.search").hide();
 $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#search").removeClass("active"); $("#menu").toggleClass("active"); });
@@ -181,7 +181,7 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
         <div id="offline-toggle" style="padding: 1em;">
           <label>
             <input type="checkbox" id="offlineCheckbox">
-            Enable Offline Mode
+            Qhib hom offline  - Enable Offline Mode
           </label>
           <span id="offline-status" style="margin-left: 1em;"></span>
         </div>
@@ -189,19 +189,19 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
     
 <div class="wrap"><div class="main"><div class="main_text">
 <div style="text-align: left;">
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="1.html">#1 -  Kuv nyiam hu nkauj 4</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="1.html">#1 -  Kuv nyiam hu nkauj</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="2.html">#2 - Angels From the Realms of Glory</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="3.html">#3 -  Thaum hnub yuav poob 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="4.html">#4 -  hnub no kuv rov los 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="5.html">#5 -  Hnub no yog hnub xyivfab 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="6.html">#6 -  Kuv hnob Vajtswv hais 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="7.html">#7 -  Thaum kuv raug kev txom nyem 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="8.html">#8 -  Hnub no yog hnub chib so 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="9.html">#9 -  Thov Vajtswv khuv leej 4</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="10.html">#10 -  Thaum lub ntuj kawg 4</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="3.html">#3 -  Thaum hnub yuav poob</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="4.html">#4 -  hnub no kuv rov los</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="5.html">#5 -  Hnub no yog hnub xyivfab</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="6.html">#6 -  Kuv hnob Vajtswv hais</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="7.html">#7 -  Thaum kuv raug kev txom nyem</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="8.html">#8 -  Hnub no yog hnub chib so</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="9.html">#9 -  Thov Vajtswv khuv leej</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="10.html">#10 -  Thaum lub ntuj kawg</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="11.html">#11 -  Lord in the morning</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="12.html">#12 -  Nearer, my God, to thee</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="13.html">#13 -  The First Song I sing 1</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="13.html">#13 -  The First Song I sing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="14.html">#14 -  Sweet Hour of prayer</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="15.html">#15 -  Fisher of man</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="16.html">#16 -  Jesus, the very thought of thee</a></small></small></p>
@@ -224,7 +224,6 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="33.html">#33 -  Come, thou almighty King</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="34.html">#34 -  Jesus love me this I know</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="35.html">#35 -  Jesus is coming again</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="36.html">#36 -  When the roll is called up yonder</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="36.html">#36 -  When the roll is called up yonder</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="37.html">#37 -  Lift Him up</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="38.html">#38 -  My Lord knows the way</a></small></small></p>
@@ -270,15 +269,15 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="78.html">#78 -  Bring them in</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="79.html">#79 -  There is power in the blood</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="80.html">#80 -  Some day the silver cord will break</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="81.html">#81 -  81. For God so loved the world</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="82.html">#82 -  I_ve Faund a friend</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="81.html">#81 -  For God so loved the world</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="82.html">#82 -  I've Found a friend</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="83.html">#83 -  Awake, my soul in joyful lays</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="84.html">#84 -  Just as I am</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="85.html">#85 -  My Jesus, I love thee</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="86.html">#86 -  Land of Thai</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="87.html">#87 -  Take the world but give me Jesus</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="88.html">#88 -  Don_t forget the Sabbath,  89. Praise God from whom all blessing flow</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="88.html">#88 -  Don_t forget the Sabbath,  89. Praise God from whom all blessing flow</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="88.html">#88 -  Don't forget the Sabbath</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="89.html">#88 -  Praise God from whom all blessing flow</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="90.html">#90 -  Crown Him with many crowns</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="91.html">#91 -  Faith of our Fathers</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="92.html">#92 -  God the creator</a></small></small></p>
@@ -292,61 +291,57 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="100.html">#100 -  Take the name of Jesus with You</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="101.html">#101 -  Love one anothers</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="102.html">#102 -  He lives</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="102.html">#102 -  He lives</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="103.html">#103 -  I_m but a stranger here</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="103.html">#103 -  I'm but a stranger here</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="104.html">#104 -  Blessed be the name</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="105.html">#105 -  He leadeth me</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="106.html">#106 -  I am so glad that our Father</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="107.html">#107 -  Jesus saviour, pilot me</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="108.html">#108 -  The gladness day</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="109.html">#109 -  Whosoever heareth</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="110.html">#110 -  My life_s fading away</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="110.html">#110 -  My life's fading away</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="111.html">#111 -  I will sing of Jesus_ love</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="112.html">#112 -  Thank you o Father</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="113.html">#113 -  To the work,  114. Litle birds</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="113.html">#113 -  To the work,  114. Litle birds</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="113.html">#113 -  To the work</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="114.html">#113 -  Litle birds</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="115.html">#115 -  Rescue the perishing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="116.html">#116 -  No not one</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="117.html">#117 -  Come, thou fount of every blessing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="118.html">#118 -  Be silent be silent</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="119.html">#119 -  There shall be showers of blessing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="120.html">#120 -  Missionary volunteer</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="121.html">#121 -  There_s a stranger at the door,   122. Heavenly sunshine</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="121.html">#121 -  There_s a stranger at the door,   122. Heavenly sunshine</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="121.html">#121 -  There's a stranger at the door</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="122.html">#122 -  Heavenly sunshine</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="123.html">#123 -  All to Jesus I surrender</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="124.html">#124 -  Praise to the Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="125.html">#125 -  Rock of ages</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="126.html">#126 -  Down at the Cross</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="127.html">#127 -  The comforter has come,  128. Jesus loves His children</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="127.html">#127 -  The comforter has come,  128. Jesus loves His children</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="129.html">#129 -  In a little while we_re going home,  130. Walking  with Jesus</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="129.html">#129 -  In a little while we_re going home,  130. Walking  with Jesus</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="131.html">#131 -  The one who loves</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="127.html">#127 -  The comforter has come</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="128.html">#128 -  Jesus loves His children</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="129.html">#129 -  In a little while we're going home</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="130.html">#129 -  Walking  with Jesus</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="131.html">#131 -  The one who loves</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="132.html">#132 -  In the land of Fadeless day</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="133.html">#133 -  Entire consecretion</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="134.html">#134 -  In this world, I am a sinner.  135. God loves the World</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="134.html">#134 -  In this world, I am a sinner.  135. God loves the World</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="134.html">#134 -  In this world, I am a sinner</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="135.html">#135 -  God loves the World</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="136.html">#136 -  Hill, Golgotha</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="137.html">#137 -  Orphan</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="138.html">#138 -  Because, God is the way of love,  139. Hear our prayer o Lord</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="138.html">#138 -  Because, God is the way of love,  139. Hear our prayer o Lord</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="138.html">#138 -  Because, God is the way of love</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="139.html">#139 -  Hear our prayer O Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="140.html">#140 -  There is a place</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="141.html">#141 -  In Jesus Christ, we are not parting</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="142.html">#142 -  The saviour suffered on the Cross</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="142.html">#142 -  The saviour suffered on the Cross</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="143.html">#143 -  Meet me there</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="142.html">#142 -  The Saviour suffered on the Cross</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="143.html">#143 -  Meet me there</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="144.html">#144 -   Tis so sweet to trust in Jesus</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="145.html">#145 -  Holy, Holy, Holy</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="146.html">#146 -  Do not Worship Devil ,  147. Christ Above All</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="146.html">#146 -  Do not Worship Devil ,  147. Christ Above All</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="148.html">#148 -  Seeking for me,  149.  Amen</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="148.html">#148 -  Seeking for me,  149.  Amen</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="146.html">#146 -  Do not Worship Devil</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="147.html">#147 -  Christ Above All</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="148.html">#148 -  Seeking for me</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="149.html">#149 -  Amen</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="150.html">#150 -  Trust and obey</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="151.html">#151 -  Joy to the World</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="152.html">#152 -  There_s a land that is fairer than day,  153. How fo you do</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="152.html">#152 -  There_s a land that is fairer than day,  153. How fo you do</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="152.html">#152 -  There's a land that is fairer than day</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="153.html">#153 -  How do you do</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="154.html">#154 -  Silent night holy night</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="155.html">#155 -  We three Kings of Orient</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="156.html">#156 -  Safe in the arms of jesus,  157. Are you</a></small></small></p>
@@ -389,14 +384,10 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="191.html">#191 -  Seek ye first</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="192.html">#192 -  Feed my lambs</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="193.html">#193 -  I am thinking today of that beautiful land</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="193.html">#193 -  I am thinking today of that beautiful land</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="194.html">#194 -  On ward Christian Soldiers</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="194.html">#194 -  On ward Christian Soldiers</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="195.html">#195 -  When we all get to Heaven</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="196.html">#196 -  Jesus is the mighty God</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="197.html">#197 -  Seeking the lost</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="197.html">#197 -  Seeking the lost</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="198.html">#198 -  The Angels are singing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="198.html">#198 -  The Angels are singing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="199.html">#199 -  As we come to you in prayer</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="200.html">#200 -  Toiling for Jesus</a></small></small></p>
@@ -407,17 +398,13 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="205.html">#205 -  The dark World</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="206.html">#206 -  Sinner_s life_s stile</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="207.html">#207 -  I_ve died for thee</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="207.html">#207 -  I_ve died for thee</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="208.html">#208 -  Then Jesus came</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="208.html">#208 -  Then Jesus came</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="209.html">#209 -  The Captain calls for you</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="209.html">#209 -  The Captain calls for you</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="210.html">#210 -  Where you there</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="211.html">#211 -  Christ has for sin atonement made</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="212.html">#212 -  I need the prayers</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="213.html">#213 -  Lead me to Valvary</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="214.html">#214 -  Love_s rainbow</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="214.html">#214 -  Love_s rainbow</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="214.html">#214 -  Love's rainbow</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="215.html">#215 -  Beautiful Valley of Eden</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="216.html">#216 -  Brightly beams our Father_s mercy</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="217.html">#217 -  Some bright morning</a></small></small></p>
@@ -426,7 +413,6 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="220.html">#220 -  At Calvary</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="221.html">#221 -  Step by step</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="222.html">#222 -  Look back to the past</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="223.html">#223 -  Standing on the promises</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="223.html">#223 -  Standing on the promises</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="224.html">#224 -  Sin them over again to me,  225. Be careful your eyes</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="224.html">#224 -  Sin them over again to me,  225. Be careful your eyes</a></small></small></p>
@@ -443,9 +429,7 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="236.html">#236 -  Lord I want to be a Christian</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="237.html">#237 -  Jesus loves sinners</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="238.html">#238 -  We are nearing home</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="238.html">#238 -  We are nearing home</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="239.html">#239 -  He_s eveything to me</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="239.html">#239 -  He_s eveything to me</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="239.html">#239 -  He's eveything to me</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="240.html">#240 -  Trust in God</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="241.html">#241 -  Pass it on</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="242.html">#242 -  Pawg ntseeg so hnub xya   243. Let_s go to the Holy land</a></small></small></p>
@@ -457,16 +441,12 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="248.html">#248 -  God is the way of love</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="249.html">#249 -  In the manger</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="250.html">#250 -  Ten Virgins</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="250.html">#250 -  Ten Virgins</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="251.html">#251 -  There _s a last hope in God</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="251.html">#251 -  There _s a last hope in God</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="251.html">#251 -  There's a last hope in God</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="252.html">#252 -  The coming King is at the door,  253.  God is so good</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="252.html">#252 -  The coming King is at the door,  253.  God is so good</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="254.html">#254 -  When Jesus shall gather the nations</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="254.html">#254 -  When Jesus shall gather the nations</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="255.html">#255 -  All the way,    256. I_m on my way home</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="255.html">#255 -  All the way,    256. I_m on my way home</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="257.html">#257 -  Sing ha le lu jah to the Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="257.html">#257 -  Sing ha le lu jah to the Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="258.html">#258 -  Do lord.  259. Father we thank thee for the night</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="258.html">#258 -  Do lord.  259. Father we thank thee for the night</a></small></small></p>
@@ -477,14 +457,12 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="264.html">#264 -  Happiness is in the Lord  R</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="265.html">#265 -  God created man L</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="266.html">#266 -  There were ninety and nine  R-L</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="266.html">#266 -  There were ninety and nine  R-L</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="267.html">#267 -  I shall see the King</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="268.html">#268 -  Come take the water of life</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="269.html">#269 -  I_ d rather have Jesus   270.  Only believe</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="269.html">#269 -  I_ d rather have Jesus   270.  Only believe</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="271.html">#271 -  Can the world see Jesus in you,  272. Ask the Saviour</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="271.html">#271 -  Can the world see Jesus in you,  272. Ask the Saviour</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="273.html">#273 -  His eye is on the Sparrow</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="273.html">#273 -  His eye is on the Sparrow</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="274.html">#274 -  Count your many blessings   275. Glory to be the Father</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="274.html">#274 -  Count your many blessings   275. Glory to be the Father</a></small></small></p>
@@ -500,7 +478,6 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="284.html">#284 -  We have this hope,  285. Thank you Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="286.html">#286 -  I love to sing</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="287.html">#287 -  Hppy the home</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="288.html">#288 -  The regions beyond</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="288.html">#288 -  The regions beyond</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="289.html">#289 -  A wonderful Saviour is Jesus my Lord,  290.  In Christ there is no east nor west</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="289.html">#289 -  A wonderful Saviour is Jesus my Lord,  290.  In Christ there is no east nor west</a></small></small></p>
@@ -521,19 +498,14 @@ $("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#searc
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="306.html">#306 -  I would be Dear Savior, wholl thine  R</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="307.html">#307 -  Nothing betwe308. the world of sin</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="307.html">#307 -  Nothing betwe308. the world of sin</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="309.html">#309 -   Ask and shall be given to you</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="310.html">#310 -  Be yond the Sun set  L</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="309.html">#309 -  Ask and shall be given to you</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="310.html">#310 -  Beyond the Sun set  L</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="311.html">#311 -  The  creator is God</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="311.html">#311 -  The  creator is God</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="312.html">#312 -  Let_s trust in God</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="312.html">#312 -  Let_s trust in God</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="313.html">#313 -  Jesus the loving shepherd</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="312.html">#312 -  Let's trust in God</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="313.html">#313 -  Jesus the loving shepherd</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="314.html">#314 -  I know that my redeemer liveth</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="314.html">#314 -  I know that my redeemer liveth</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="315.html">#315 -  The dreaming world</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="315.html">#315 -  The dreaming world</a></small></small></p>
-<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="316.html">#316 -  Away cgeerful.   317,  Praise the Lord</a></small></small></p>
+<p style="font-weight: normal;" class="MsoNormal"><small><small><a href="316.html">#316 -  Always cheerful.   317,  Praise the Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="316.html">#316 -  Away cgeerful.   317,  Praise the Lord</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="318.html">#318 -   The first Noel,   319.  My body is God_s Temple</a></small></small></p>
 <p style="font-weight: normal;" class="MsoNormal"><small><small><a href="318.html">#318 -   The first Noel,   319.  My body is God_s Temple</a></small></small></p>
@@ -596,12 +568,12 @@ $(document).ready(function() {
   }
 
   // Add a button to trigger diagnostics
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.createElement('button');
-    btn.textContent = 'Show Cached Files';
-    btn.style.cssText = 'position:fixed;bottom:1em;right:1em;z-index:9999;padding:10px;';
-    btn.onclick = showCachedFiles;
-    document.body.appendChild(btn);
-  });
+//  document.addEventListener('DOMContentLoaded', () => {
+//    const btn = document.createElement('button');
+//    btn.textContent = 'Show Cached Files';
+//    btn.style.cssText = 'position:fixed;bottom:1em;right:1em;z-index:9999;padding:10px;';
+//    btn.onclick = showCachedFiles;
+//    document.body.appendChild(btn);
+//  });
 </script>
 </body></html>
