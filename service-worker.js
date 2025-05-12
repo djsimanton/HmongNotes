@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v23';
+const CACHE_NAME = 'hmongnotes-cache-v25';
 
 const urlsToCache = [
   '/',    // Root
@@ -7,6 +7,7 @@ const urlsToCache = [
   '/icon-512.png',
   'index.html',
   'hmongnotes.html',
+  'hmongnotes_EnglishAlpha.html',
   '1.html',
 '10.html',
 '100.html',

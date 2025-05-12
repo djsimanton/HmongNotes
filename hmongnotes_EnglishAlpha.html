@@ -1,0 +1,581 @@
+<!DOCTYPE HTML>
+<html lang="hmg"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+<script>
+let waitBanner;
+
+function showWaitingMessage(message) {
+  // Remove if already showing
+  hideWaitingMessage();
+
+  waitBanner = document.createElement('div');
+  waitBanner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#444;color:#fff;text-align:center;padding:10px;z-index:9999;';
+  waitBanner.innerHTML = `
+    ${message}
+    <button onclick="hideWaitingMessage()">Tso Tawm - Stop Now</button>
+  `;
+  document.body.appendChild(waitBanner);
+}
+
+function hideWaitingMessage() {
+  if (waitBanner) {
+    waitBanner.remove();
+    waitBanner = null;
+  }
+}
+
+function enableOffline() {
+  showWaitingMessage('Tos khaws ntaub ntawv - Wait while files are saved...');
+
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => {
+      console.log('Service Worker registered');
+
+      navigator.serviceWorker.ready.then(() => {
+        reg.active?.postMessage('START_CACHING');
+      });
+
+      // Listen for response from service worker
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data === 'Khaws tiav lawm - CACHING_COMPLETE') {
+          console.log('Caching complete');
+
+          // Optionally show success message briefly
+          showWaitingMessage('Siv tsis muaj internet - Offline mode enabled');
+
+          // Wait a moment, then reload to activate cache immediately
+          setTimeout(() => {
+            hideWaitingMessage();
+            location.reload();
+          }, 1500);
+        }
+      });
+    })
+    .catch(err => {
+      console.error('SW registration failed:', err);
+      hideWaitingMessage();
+    });
+}
+
+function disableOffline() {
+  showWaitingMessage('Tos tshem ntaub ntawv - Wait while files are removed...');
+
+  navigator.serviceWorker.getRegistration().then(reg => {
+    if (reg) {
+      reg.unregister().then(() => {
+        navigator.serviceWorker.controller?.postMessage('CLEAR_CACHE');
+        // Reload the page after cache is cleared
+        setTimeout(() => {
+          hideWaitingMessage();
+          location.reload();
+        }, 2000); // Adjust the delay time if needed
+      });
+    } else {
+      hideWaitingMessage();
+    }
+  });
+}
+
+function enableOffline() {
+  showWaitingMessage('Tos khaws ntaub ntawv - Wait while files are saved...');
+
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => {
+      console.log('Service Worker registered');
+      
+      // When it's ready, send caching command
+      navigator.serviceWorker.ready.then(() => {
+        reg.active?.postMessage('START_CACHING');
+      });
+    })
+    .catch(err => {
+      console.error('SW registration failed:', err);
+      hideWaitingMessage();
+    });
+}
+
+function toggleOffline(enable) {
+  if (enable) {
+    localStorage.setItem('offlineMode', 'enabled');
+    enableOffline();
+    document.getElementById('offline-status').textContent = 'Siv tsis muaj internet - Offline Mode ON';
+  } else {
+    localStorage.removeItem('offlineMode');
+    disableOffline();
+    document.getElementById('offline-status').textContent = 'Tsis siv offline - Offline Mode OFF';
+  }
+}
+
+
+// On page load
+document.addEventListener('DOMContentLoaded', () => {
+  const checkbox = document.getElementById('offlineCheckbox');
+  const status = document.getElementById('offline-status');
+  const offlineEnabled = localStorage.getItem('offlineMode') === 'enabled';
+
+  checkbox.checked = offlineEnabled;
+  status.textContent = offlineEnabled ? 'Siv tsis muaj internet - Offline Mode ON' : 'Tsis siv offline - Offline Mode OFF';
+
+  if (offlineEnabled) {
+    enableOffline();
+  }
+
+  checkbox.addEventListener('change', () => {
+    toggleOffline(checkbox.checked);
+  });
+
+  // Listen for message back from SW
+  navigator.serviceWorker?.addEventListener('message', event => {
+    if (event.data === 'CACHING_COMPLETE') {
+      hideWaitingMessage();
+    }
+  });
+});
+</script>
+
+
+
+
+
+<meta name="theme-color" content="#003366">
+<link rel="manifest" href="/manifest.json">
+<title>Hmong SDA Notes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="Bible content written for Lao people in the Lao language">
+<link rel="stylesheet" href="fonts/fonts.css" type="text/css">
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/slider.css" />
+<script type="text/javascript" src="js/modernizr.custom.28468.js"></script>
+<script type="text/javascript" src="js/jquery.cslider.js"></script>
+<script type="text/javascript">
+$(function() {
+    $('#da-slider').cslider({ autoplay : true, bgincrement : 450 }); 
+});
+</script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $(".scroll").click(function(event){ event.preventDefault();
+        $('html,body').animate({scrollTop:$(this.hash).offset().top},1200);
+    });
+});
+</script>
+</head>
+<body>
+<div class="header_bg"><div class="wrap"><div class="header">
+<div class="logo"> <a href="hmongnotes.html"><img style="width: 519px; height: 86px;" src="images/booktitle.png" alt=""> </a> </div>
+<div class="clear"></div></div></div></div>
+
+<div class="header_btm"><div class="wrap"><div class="header_sub"><div class="menu">
+<ul><li class="active"></li><li><a href="hmongnotes.html">Raws Tus Zauv - Numerical Order</a></li></ul>
+<ul><li class="active"></li><li><a href="hmongnotes.html">Raws Tus Npe - ABC Order</a></li></ul>
+<ul><li class="active"></li><li><a href="hmongnotes_EnglishAlpha.html">English Alpha-Order</a></li></ul>  
+</div><div class="sub-head"><ul><li><a href="#" id="menu">Phiaj Xwm - Contents <span></span></a></li></ul><div class="clear"></div></div>
+<script type="text/javascript">
+$(".menu,.search").hide();
+$("#menu").click(function(){ $(".menu").toggle(); $(".search").hide(); $("#search").removeClass("active"); $("#menu").toggleClass("active"); });
+</script><br><script type="text/javascript" src="js/script.js"></script><div class="clear"></div></div></div></div>
+        
+        <p>&nbsp;</p>
+        <div id="offline-toggle" style="padding: 1em;">
+          <label>
+            <input type="checkbox" id="offlineCheckbox">
+            Qhib hom offline  - Enable Offline Mode
+          </label>
+          <span id="offline-status" style="margin-left: 1em;"></span>
+        </div>
+        <p>&nbsp;</p>                    
+    
+<div class="wrap"><div class="main"><div class="main_text">
+<div style="text-align: left;">
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="300.html">#300 -  A New Year's Blessing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="289.html">#289 -  A Wonderful Saviour is Jesus My Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="260.html">#260 -  All Hail the Power of Jesus' Name</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="201.html">#201 -  All the Way</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="255.html">#255 -  All the Way</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="123.html">#123 -  All to Jesus I Surrender</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="316.html">#316 -  Always Cheerful</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="39.html">#39 -    Amazing Grace</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="149.html">#149 -  Amen</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="176.html">#176 -  Amen</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="189.html">#189 -  Amid the Trials</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="2.html">#2 -      Angels From the Realms of Glory</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="233.html">#233 -  Any Wher With Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="157.html">#157 -  Are You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="74.html">#74 -    Are You Washed in the Blood</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="199.html">#199 -  As We Come to You in Prayer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="281.html">#281 -  As We Come to You in Prayer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="309.html">#309 -  Ask and Shall be Given to You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="272.html">#272 -  Ask the Saviour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="220.html">#220 -  At Calvary</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="276.html">#276 -  At the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="83.html">#83 -    Awake, My Soul in Joyful Lays</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="225.html">#225 -  Be Careful Your Eyes</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="180.html">#180 -  Be on Time</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="118.html">#118 -  Be Silent be Silent</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="215.html">#215 -  Beautiful Valley of Eden</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="138.html">#138 -  Because, God is the Way of Love</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="310.html">#310 -  Beyond the Sun Set L</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="97.html">#97 -    Bless be the Tie</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="181.html">#181 -  Blessed Assurance, Jesus is Mine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="104.html">#104 -  Blessed be the Name</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="226.html">#226 -  Break Thou the Bread of Life</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="230.html">#230 -  Brighten the Comer Where You Are</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="216.html">#216 -  Brightly Beams Our Father's Mercy</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="279.html">#279 -  Bring the Lost to Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="78.html">#78 -    Bring Them in</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="186.html">#186 -  Brother be Faithful</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="271.html">#271 -  Can the World See Jesus in You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="147.html">#147 -  Christ Above All</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="177.html">#177 -  Christ Arose</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="211.html">#211 -  Christ Has for Sin Atonement Made</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="321.html">#321 -  Christ is Made the Sure Foundation</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="20.html">#20 -    Christ the Lord is Risen to Day</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="188.html">#188 -  Christian Are One in Christ</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="268.html">#268 -  Come Take the Water of Life</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="261.html">#261 -  Come to Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="165.html">#165 -  Come to the Saviour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="185.html">#185 -  Come We That Love the Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="33.html">#33 -    Come, Thou Almighty King</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="117.html">#117 -  Come, Thou Fount of Every Blessing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="274.html">#274 -  Count Your Many Blessings</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="90.html">#90 -    Crown Him With Many Crowns</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="258.html">#258 -  Do Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="146.html">#146 -  Do Not Worship Devil</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="88.html">#88 -    Don't Forget the Sabbath</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="126.html">#126 -  Down at the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="133.html">#133 -  Entire Consecretion</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="246.html">#246 -  Every Ought to Know</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="18.html">#18 -    Face to Face With Christ My Saviour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="91.html">#91 -    Faith of Our Fathers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="259.html">#259 -  Father We Thank Thee for the Night</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="192.html">#192 -  Feed My Lambs</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="15.html">#15 -    Fisher of Man</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="244.html">#244 -  Follow Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="170.html">#170 -  Follow on</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="81.html">#81 -    For God So Loved the World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="50.html">#50 -    Give Me the Bible</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="275.html">#275 -  Glory to be the Father</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="25.html">#25 -    God be With You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="265.html">#265 -  God Created Man</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="178.html">#178 -  God is Love</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="253.html">#253 -  God is So Good</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="248.html">#248 -  God is the Way of Love</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="135.html">#135 -  God Loves the World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="92.html">#92 -    God the Creator</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="229.html">#229 -  God's Love Revealed in the Lord Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="231.html">#231 -  Good Bye My Friends</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="168.html">#168 -  Halelujah</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="264.html">#264 -  Happiness is in the Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="174.html">#174 -  Happy Day</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="287.html">#287 -  Happy the Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="158.html">#158 -  Hark the Herald Angels Sing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="305.html">#305 -  Have Thy Own Way Lord R</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="263.html">#263 -  He Banner Over Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="247.html">#247 -  He is Risen</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="105.html">#105 -  He Leadeth Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="102.html">#102 -  He Lives</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="239.html">#239 -  He's Eveything to Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="139.html">#139 -  Hear Our Prayer O Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="122.html">#122 -  Heavenly Sunshine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="136.html">#136 -  Hill, Golgotha</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="273.html">#273 -  His Eye is on the Sparrow</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="4.html">#4 -      Hnub No Kuv Rov Los</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="8.html">#8 -      Hnub No Yog Hnub Chib So</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="5.html">#5 -      Hnub No Yog Hnub Xyivfab</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="29.html">#29 -    Holy Spirit, Faithful Guide</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="145.html">#145 -  Holy, Holy, Holy</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="28.html">#28 -    Hover O'er Me Holy Spirit</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="153.html">#153 -  How Do You Do</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="99.html">#99 -    How Firm a Foundation</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="42.html">#42 -    How Great Thou Art</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="69.html">#69 -    I Am Coming to the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="106.html">#106 -  I Am So Glad That Our Father</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="65.html">#65 -    I Am Thine O Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="193.html">#193 -  I Am Thinking Today of That Beautiful Land</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="23.html">#23 -    I Gave My Life for Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="245.html">#245 -  I Have Decided to Follow Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="63.html">#63 -    I Hear Thy Welcome Voice</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="304.html">#304 -  I Heard the Voice of Jesus Say</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="314.html">#314 -  I Know That My Redeemer Liveth</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="73.html">#73 -    I Love Thee Better Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="286.html">#286 -  I Love to Sing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="71.html">#70 -    I Love to Tell the Story</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="212.html">#212 -  I Need the Prayers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="62.html">#62 -    I Need Thee Every Hour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="267.html">#267 -  I Shall See the King</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="64.html">#64 -    I Will Follow Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="111.html">#111 -  I Will Sing of Jesus' Love</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="306.html">#306 -  I Would be Dear Savior, Wholl Thine R</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="269.html">#269 -  I'd Rather Have Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="103.html">#103 -  I'm But a Stranger Here</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="256.html">#256 -  I'm on My Way Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="53.html">#53 -    I'm Pressing on the Upward Way</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="207.html">#207 -  I've Died for Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="207.html">#207 -  I've Died for Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="82.html">#82 -    I've Found a Friend</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="322.html">#322 -  If I've Wings Like a Bird</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="129.html">#129 -  In a Little While We're Going Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="290.html">#290 -  In Christ There is No East Nor West</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="179.html">#179 -  In Heaven, I Will be There</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="141.html">#141 -  In Jesus Christ, We Are Not Parting</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="132.html">#132 -  In the Land of Fadeless Day</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="249.html">#249 -  In the Manger</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="134.html">#134 -  In This World, I Am a Sinner</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="39.html">#40 -    Into My Heart</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="22.html">#22 -    It is Well With My Soul</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="17.html">#17 -    Jehovah God Cares for Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="164.html">#164 -  Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="280.html">#280 -  Jesus Bids Us Shine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="166.html">#166 -  Jesus Holds My Hand</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="44.html">#44 -    Jesus is All the World to Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="35.html">#35 -    Jesus is Coming Again</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="196.html">#196 -  Jesus is the Mighty God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="203.html">#203 -  Jesus is the Nurturer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="45.html">#45 -    Jesus Keep Me Near the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="34.html">#34 -    Jesus Love Me This I Know</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="292.html">#292 -  Jesus Lover of My Soul</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="128.html">#128 -  Jesus Loves His Children</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="237.html">#237 -  Jesus Loves Sinners</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="107.html">#107 -  Jesus Saviour, Pilot Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="313.html">#313 -  Jesus the Loving Shepherd</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="16.html">#16 -    Jesus, the Very Thought of Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="323.html">#323 -  John 3 Verse 16</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="77.html">#77 -    Jointly on the Way</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="27.html">#27 -    Jonah</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="151.html">#151 -  Joy to the World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="84.html">#84 -    Just As I Am</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="6.html">#6 -      Kuv Hnob Vajtswv Hais</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="1.html">#1 -      Kuv Nyiam Hu Nkauj</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="86.html">#86 -    Land of Thai</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="213.html">#213 -  Lead Me to Calvary</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="243.html">#243 -  Let's Go to the Holy Land</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="312.html">#312 -  Let's Trust in God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="228.html">#228 -  Life in a Look</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="37.html">#37 -    Lift Him Up</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="114.html">#113 -  Litle Birds</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="277.html">#277 -  Little Towm of Bethlehem</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="222.html">#222 -  Look Back to the Past</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="190.html">#190 -  Lord I Care Not for Riches</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="236.html">#236 -  Lord I Want to be a Christian</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="11.html">#11 -    Lord in the Morning</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="297.html">#297 -  Lord We Come Before You Now</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="57.html">#57 -    Love Divine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="101.html">#101 -  Love One Anothers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="214.html">#214 -  Love's Rainbow</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="296.html">#296 -  Meal Time Prayer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="143.html">#143 -  Meet Me There</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="218.html">#218 -  Men All Stand Before the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="120.html">#120 -  Missionary Volunteer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="320.html">#320 -  More Love to Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="183.html">#183 -  Must Jesus Bear the Cross Alone</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="319.html">#319 -  My Body is God's Temple</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="66.html">#66 -    My Faith Looks Up to Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="58.html">#58 -    My Hope is Built Nothing Less</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="85.html">#85 -    My Jesus, I Love Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="110.html">#110 -  My Life's Fading Away</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="38.html">#38 -    My Lord Knows the Way</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="12.html">#12 -    Nearer, My God, to Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="116.html">#116 -  No Not One</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="307.html">#307 -  Nothing Between</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="293.html">#293 -  Nothing But the Blood</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="161.html">#161 -  O Come All Ye Faithful</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="262.html">#262 -  O Come O Come Emmanuel</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="160.html">#160 -  O Holy Night</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="21.html">#21 -    O Let Me Walk With Thee</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="24.html">#24 -    O Where Are the Reapers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="98.html">#98 -    O Worship the King</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="172.html">#172 -  Oh Brothers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="171.html">#171 -  Oh Happy Day That Fixed My Choice</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="175.html">#175 -  On a Hill Far Away</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="194.html">#194 -  On Ward Christian Soldiers</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="270.html">#270 -  Only Believe</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="187.html">#187 -  Open Your Heart to Christ</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="137.html">#137 -  Orphan</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="241.html">#241 -  Pass It on</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="95.html">#95 -    Pass Me Not, O Gentle Saviour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="242.html">#242 -  Pawg Ntseeg So Hnub Xya</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="89.html">#88 -    Praise God From Whom All Blessing Flow</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="295.html">#295 -  Praise Him Praise Him</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="317.html">#317 -  Praise the Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="124.html">#124 -  Praise to the Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="234.html">#234 -  Redeemed How L Love to Proclaim It</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="48.html">#48 -    Rejoice, Ye Pure in Heart</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="115.html">#115 -  Rescue the Perishing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="125.html">#125 -  Rock of Ages</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="294.html">#294 -  Roll Away</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="31.html">#31 -    Roll Roll Your Burdens Away</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="156.html">#156 -  Safe in the Arms of Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="26.html">#26 -    Safely Though Another Week</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="191.html">#191 -  Seek Ye First</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="148.html">#148 -  Seeking for Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="197.html">#197 -  Seeking the Lost</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="278.html">#278 -  Send the Light</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="167.html">#167 -  Shall We Gather at the River</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="154.html">#154 -  Silent Night Holy Night</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="224.html">#224 -  Sin Them Over Again to Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="257.html">#257 -  Sing Ha Le Lu Jah to the Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="68.html">#68 -    Sing the Mighty Power</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="206.html">#206 -  Sinner's Life's Stile</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="232.html">#232 -  Sitting at the Feet of Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="217.html">#217 -  Some Bright Morning</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="80.html">#80 -    Some Day the Silver Cord Will Break</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="96.html">#96 -    Sowing in the Morning</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="227.html">#227 -  Stand Up Stand Up for Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="223.html">#223 -  Standing on the Promises</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="221.html">#221 -  Step By Step</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="299.html">#299 -  Sun of My Soul</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="14.html">#14 -    Sweet Hour of Prayer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="100.html">#100 -  Take the Name of Jesus With You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="87.html">#87 -    Take the World But Give Me Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="250.html">#250 -  Ten Virgins</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="54.html">#55 -    Thank You Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="285.html">#285 -  Thank You Lord</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="283.html">#283 -  Thank You Now</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="112.html">#112 -  Thank You O Father</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="3.html">#3 -      Thaum Hnub Yuav Poob</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="7.html">#7 -      Thaum Kuv Raug Kev Txom Nyem</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="10.html">#10 -    Thaum Lub Ntuj Kawg</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="198.html">#198 -  The Angels Are Singing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="182.html">#182 -  The Beautiful City</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="209.html">#209 -  The Captain Calls for You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="127.html">#127 -  The Comforter Has Come</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="252.html">#252 -  The Coming King is at the Door</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="311.html">#311 -  The Creator is God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="205.html">#205 -  The Dark World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="315.html">#315 -  The Dreaming World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="318.html">#318 -  The First Noel</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="13.html">#13 -    The First Song I Sing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="108.html">#108 -  The Gladness Day</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="19.html">#19 -    The Great Physician Now is Near</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="169.html">#169 -  The King of Kings</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="32.html">#32 -    The Lord in Zion Reigneth</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="43.html">#43 -    The Lord is in His Holy Temple</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="46.html">#46 -    The Lord is My Light</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="30.html">#30 -    The Love of God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="131.html">#131 -  The One Who Loves</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="288.html">#288 -  The Regions Beyond</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="52.html">#52 -    The Righteous Deed is Righteousness</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="142.html">#142 -  The Saviour Suffered on the Cross</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="56.html">#56 -    The Way of the Cross Leads Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="308.html">#308 -  The World of Sin</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="208.html">#208 -  Then Jesus Came</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="72.html">#72 -    There is a Fountain</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="162.html">#162 -  There is a Happy Land</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="140.html">#140 -  There is a Place</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="303.html">#303 -  There is a Place of Quiet Rest</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="79.html">#79 -    There is Power in the Blood</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="119.html">#119 -  There Shall be Showers of Blessing</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="266.html">#266 -  There Were Ninety and Nine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="163.html">#163 -  There'll be No Dark Valley</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="152.html">#152 -  There's a Land That is Fairer Than Day</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="251.html">#251 -  There's a Last Hope in God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="291.html">#291 -  There's a Song in the Air</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="121.html">#121 -  There's a Stranger at the Door</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="49.html">#49 -    This is My Father's World</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="159.html">#159 -  This Little Light of Mine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="54.html">#54 -    This World is Not My Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="9.html">#9 -      Thov Vajtswv Khuv Leej</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="184.html">#184 -  Throw Out the Lifeline</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="219.html">#219 -  Time Does Not Wait for You</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="144.html">#144 -  Tis So Sweet to Trust in Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="60.html">#60 -    To God be the Glory</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="113.html">#113 -  To the Work</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="200.html">#200 -  Toiling for Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="150.html">#150 -  Trust and Obey</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="240.html">#240 -  Trust in God</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="61.html">#61 -    Turn Your Eye Upon Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="51.html">#51 -    Two Eyes Read the Bible</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="202.html">#202 -  Wa Are One in the Spirit</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="130.html">#129 -  Walking With Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="59.html">#59 -    Watch Ye Saints</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="75.html">#74 -    We Are Gethering</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="238.html">#238 -  We Are Nearing Home</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="298.html">#298 -  We Gather Together</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="94.html">#94 -    We Have Heard a Joyful Sound</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="284.html">#284 -  We Have This Hope</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="282.html">#282 -  We Know No the Hour</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="155.html">#155 -  We Three Kings of Orient</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="301.html">#301 -  We Would See Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="210.html">#210 -  Were You There</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="41.html">#41 -    What a Fellowship, What a Joy Divine</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="76.html">#76 -    What a Friend We Have in Jesus</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="254.html">#254 -  When Jesus Shall Gather the Nations</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="36.html">#36 -    When the Roll is Called Up Yonder</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="195.html">#195 -  When We All Get to Heaven</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="204.html">#204 -  When We be Parted</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="67.html">#67 -    Where He Leads Me</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="173.html">#173 -  Where We'll Never Grow Old</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="47.html">#47 -    Whisper a Prayer</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="109.html">#109 -  Whosoever Heareth</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="70.html">#71 -    Will You be My Friend</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="235.html">#235 -  Work for the Night is Coming</a></small></small></p>
+<p class="MsoNormal" style="font-weight: normal;"><small><small><a href="93.html">#93 -    You Can Smile</a></small></small></p>
+
+<p>&nbsp;</p>    
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+<tr>
+<td>&nbsp;<a href="1.html"><img style="width: 25px; height: 25px;" src="images/arrow-l-black.png" alt=""></a></td>
+<td></td>
+<td style="text-align: right;"><a href="2.html"><img style="width: 25px; height: 25px;" src="images/arrow-r-black.png" alt=""></a></td>
+</tr>
+
+</table>
+</div></div></div></div>
+
+<div class="footer_bg"><div class="wrap"><div class="footer"><div class="span_of_4"><div class="span1_of_4"></div></div></div></div></div>
+<div class="footer_bg1"><div class="wrap"><div class="footer1">
+<script type="text/javascript">
+$(document).ready(function() {
+    $().UItoTop({ easingType: 'easeOutQuart' });
+});
+</script><a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
+<div class="social-icons"><ul></ul></div>
+<div class="copy">
+<div class="logo"> <img style="width: 600px; height: 130px;" src="images/logo.png" alt=""> </div>
+<p class="link"><span>© 2025 <a href="https://www.mekongchristianmedia.com" target="_blank">MekongChristianMedia</a></span><span> | </span><a href="license.html">CreativeCommons Attribution ShareAlike</a></p>
+</div><div class="clear"></div></div></div></div>
+<script src="js/font-buttons.js"></script>
+
+  
+<script>
+  async function showCachedFiles() {
+    if (!('caches' in window)) {
+      alert('Cache API not supported.');
+      return;
+    }
+
+    const cacheNames = await caches.keys();
+    let output = '';
+
+    for (const name of cacheNames) {
+      const cache = await caches.open(name);
+      const requests = await cache.keys();
+
+      output += `Cache: ${name}\n`;
+      for (const req of requests) {
+        output += `• ${req.url}\n`;
+      }
+      output += '\n';
+    }
+
+    // Display results in a simple modal or alert
+    const pre = document.createElement('pre');
+    pre.textContent = output;
+    pre.style.cssText = 'background:#eee;padding:1em;max-height:300px;overflow:auto;border:1px solid #ccc;';
+    document.body.appendChild(pre);
+  }
+
+  // Add a button to trigger diagnostics
+//  document.addEventListener('DOMContentLoaded', () => {
+//    const btn = document.createElement('button');
+//    btn.textContent = 'Show Cached Files';
+//    btn.style.cssText = 'position:fixed;bottom:1em;right:1em;z-index:9999;padding:10px;';
+//    btn.onclick = showCachedFiles;
+//    document.body.appendChild(btn);
+//  });
+</script>
+</body></html>
