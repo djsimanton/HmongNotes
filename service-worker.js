@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v26';
+const CACHE_NAME = 'hmongnotes-cache-v27';
 
 const urlsToCache = [
   '/',    // Root
@@ -768,10 +768,7 @@ self.addEventListener('install', event => {
 // Activate: clean old caches, then claim clients if caching enabled
 self.addEventListener('activate', event => {
   event.waitUntil(
-    (shouldCache
-      ? caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-      : Promise.resolve()
-    )
+    (shouldCache      ? caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))      : Promise.resolve()    )
     .then(() =>
       caches.keys().then(cacheNames =>
         Promise.all(
@@ -794,9 +791,7 @@ self.addEventListener('fetch', event => {
     request.mode === 'navigate' ||
     (request.headers.get('accept')?.includes('text/html') && !url.pathname.endsWith('.html'))
   ) {
-    const fallbackUrl = url.pathname.endsWith('/')
-      ? `${url.pathname}.html`
-      : `${url.pathname}.html`;
+      const fallbackUrl = url.pathname.endsWith('/') ? `${url.pathname}index.html` : `${url.pathname}.html`;
 
     event.respondWith(
       caches.match(fallbackUrl)
