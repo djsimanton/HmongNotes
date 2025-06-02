@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmongnotes-cache-v25';
+const CACHE_NAME = 'hmongnotes-cache-v26';
 
 const urlsToCache = [
   '/',    // Root
@@ -795,7 +795,7 @@ self.addEventListener('fetch', event => {
     (request.headers.get('accept')?.includes('text/html') && !url.pathname.endsWith('.html'))
   ) {
     const fallbackUrl = url.pathname.endsWith('/')
-      ? `${url.pathname}index.html`
+      ? `${url.pathname}.html`
       : `${url.pathname}.html`;
 
     event.respondWith(
@@ -806,7 +806,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(err => {
           console.warn('Fetch failed; serving fallback.', err);
-          return caches.match('/contents.html');
+          return caches.match('/index.html');
         })
     );
     return;
@@ -818,7 +818,7 @@ self.addEventListener('fetch', event => {
 
       return fetch(request).catch(() => {
         if (request.destination === 'document') {
-          return caches.match('/contents.html');
+          return caches.match('/index.html');
         }
         return new Response('', { status: 404, statusText: 'Not found' });
       });
